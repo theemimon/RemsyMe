@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+  <!-- Background -->
+  <path
+      android:fillColor="#E8F5E9"
+      android:pathData="M0,0h200v150H0z"/>
+  <!-- Plate -->
+  <path
+      android:fillColor="#FAF5E8"
+      android:pathData="M100,20 C150,20 180,45 180,75 C180,105 150,130 100,130 C50,130 20,105 20,75 C20,45 50,20 100,20 Z"/>
+  <!-- Grilled Chicken Breast -->
+  <path
+      android:fillColor="#D7CCC8"
+      android:pathData="M60,60 C90,45 140,50 150,80 C155,100 120,110 80,105 C50,100 45,75 60,60 Z"/>
+  <!-- Grill Marks -->
+  <path
+      android:fillColor="#5D4037"
+      android:pathData="M75,60 L95,95 M100,55 L120,90 M125,60 L140,85"
+      android:strokeColor="#5D4037"
+      android:strokeWidth="3"
+      android:strokeLineCap="round"/>
+  <!-- Lemon & Herbs -->
+  <path
+      android:fillColor="#FFEB3B"
+      android:pathData="M120,85 C130,85 130,95 120,95 C110,95 110,85 120,85 Z"/>
+  <path
+      android:fillColor="#2E6F40"
+      android:pathData="M70,80 C75,75 80,80 75,85 Z"/>
+</vector>

@@ -1,0 +1,39 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="400dp"
+    android:height="260dp"
+    android:viewportWidth="400"
+    android:viewportHeight="260">
+  <!-- Background dish plate container -->
+  <path
+      android:fillColor="#E8F3EA"
+      android:pathData="M0,0h400v260H0z"/>
+  <!-- Decorative Creme Bowl / Plate -->
+  <path
+      android:fillColor="#F5EFDF"
+      android:pathData="M200,30 C300,30 360,70 360,130 C360,190 300,230 200,230 C100,230 40,190 40,130 C40,70 100,30 200,30 Z"/>
+  <!-- Outer rim -->
+  <path
+      android:fillColor="#2E6F40"
+      android:pathData="M200,45 C285,45 340,80 340,130 C340,180 285,215 200,215 C115,215 60,180 60,130 C60,80 115,45 200,45 Z"
+      android:alpha="0.2"/>
+  <!-- Main Food Dish (Green Avocado Herb Pasta) -->
+  <path
+      android:fillColor="#4E9F63"
+      android:pathData="M200,60 C265,60 315,90 315,130 C315,170 265,200 200,200 C135,200 85,170 85,130 C85,90 135,60 200,60 Z"/>
+  <!-- Pasta Highlights -->
+  <path
+      android:fillColor="#FFFDF6"
+      android:pathData="M170,110 Q190,95 210,110 T250,110"
+      android:strokeColor="#FAF5E8"
+      android:strokeWidth="6"
+      android:strokeLineCap="round"/>
+  <path
+      android:fillColor="#FFFDF6"
+      android:pathData="M150,140 Q180,125 210,140 T240,140"
+      android:strokeColor="#FAF5E8"
+      android:strokeWidth="6"
+      android:strokeLineCap="round"/>
+  <path
+      android:fillColor="#FFC107"
+      android:pathData="M195,120 C205,120 205,130 195,130 C185,130 185,120 195,120 Z"/>
+</vector>

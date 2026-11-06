@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/FirstFragment">
+
+    <fragment
+        android:id="@+id/FirstFragment"
+        android:name="com.example.remsymes.FirstFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_first">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_CookbookFragment"
+            app:destination="@id/CookbookFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/CookbookFragment"
+        android:name="com.example.remsymes.CookbookFragment"
+        android:label="@string/cookbook_title"
+        tools:layout="@layout/fragment_cookbook">
+
+        <action
+            android:id="@+id/action_CookbookFragment_to_CategoryRecipesFragment"
+            app:destination="@id/CategoryRecipesFragment" />
+        <action
+            android:id="@+id/action_CookbookFragment_to_AddRecipeFragment"
+            app:destination="@id/AddRecipeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/CategoryRecipesFragment"
+        android:name="com.example.remsymes.CategoryRecipesFragment"
+        android:label="@string/category_recipes_label"
+        tools:layout="@layout/fragment_category_recipes">
+
+        <action
+            android:id="@+id/action_CategoryRecipesFragment_to_RecipeDetailFragment"
+            app:destination="@id/RecipeDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/AddRecipeFragment"
+        android:name="com.example.remsymes.AddRecipeFragment"
+        android:label="@string/add_recipe_title"
+        tools:layout="@layout/fragment_add_recipe">
+
+        <action
+            android:id="@+id/action_AddRecipeFragment_to_RecipeDetailFragment"
+            app:destination="@id/RecipeDetailFragment"
+            app:popUpTo="@id/AddRecipeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/RecipeDetailFragment"
+        android:name="com.example.remsymes.RecipeDetailFragment"
+        android:label="@string/recipe_detail_label"
+        tools:layout="@layout/fragment_recipe_detail">
+
+        <action
+            android:id="@+id/action_RecipeDetailFragment_to_EditRecipeFragment"
+            app:destination="@id/EditRecipeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/EditRecipeFragment"
+        android:name="com.example.remsymes.EditRecipeFragment"
+        android:label="@string/edit_recipe_title"
+        tools:layout="@layout/fragment_edit_recipe" />
+</navigation>

@@ -1,0 +1,140 @@
+<resources>
+    <string name="app_name">RemsyMes</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Navigation labels -->
+    <string name="first_fragment_label">Welcome</string>
+    <string name="second_fragment_label">Kitchen</string>
+    <string name="cookbook_title">Cookbook</string>
+    <string name="category_recipes_label">Collection Recipes</string>
+    <string name="add_recipe_title">Add Recipe</string>
+    <string name="edit_recipe_title">Edit Recipe</string>
+    <string name="recipe_detail_label">Recipe Details</string>
+
+    <!-- Landing Page -->
+    <string name="welcome_title">Welcome, Emilia!</string>
+    <string name="get_cooking">Get Cooking</string>
+
+    <!-- Toolbar / Menu options -->
+    <string name="action_edit_recipe">Edit Recipe</string>
+    <string name="action_delete_recipe">Delete Recipe</string>
+    <string name="action_delete_collection">Delete Collection</string>
+    <string name="dialog_delete_collection_title">Delete %1$s?</string>
+    <string name="dialog_delete_collection_msg">Recipes inside this collection will not be deleted, but moved to \'Uncategorized\'.</string>
+    <string name="btn_delete">Delete</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="msg_collection_deleted">Collection deleted. Recipes moved to Uncategorized.</string>
+
+    <!-- Cookbook Page -->
+    <string name="cookbook_subtitle">Your collections &amp; saved recipes</string>
+    <string name="category_recipes_subtitle">Select a recipe to start cooking</string>
+    <string name="empty_category_msg">No recipes in this collection yet.</string>
+    <string name="empty_cookbook_msg">No recipe collections found. Tap \'Add Recipe\' to get started!</string>
+    <string name="add_recipe">Add Recipe</string>
+    <string name="cat_faves">Faves</string>
+    <string name="cat_faves_sub">Your saved favorite recipes</string>
+    <string name="msg_cannot_delete_faves">The Faves collection is built-in and cannot be deleted.</string>
+    <string name="cat_pasta">Pasta &amp; Italian</string>
+    <string name="cat_pasta_sub">2 Recipes • Creamy pastas &amp; Italian classics</string>
+    <string name="cat_desserts">Desserts</string>
+    <string name="cat_desserts_sub">2 Recipes • Cakes, tarts &amp; sweet treats</string>
+    <string name="cat_main_courses">Main Courses</string>
+    <string name="cat_main_courses_sub">2 Recipes • Hearty chicken &amp; savory mains</string>
+    <string name="cat_breakfast">Breakfast &amp; Brunch</string>
+    <string name="cat_breakfast_sub">2 Recipes • Fluffy pancakes &amp; morning dishes</string>
+    <string name="cat_uncategorized">Uncategorized</string>
+    <string name="cat_uncategorized_sub">Moved &amp; standalone recipes</string>
+    <string name="sample_recipe_count">2 Recipes</string>
+    <string name="sample_recipe_count_fmt">%1$d Recipes</string>
+
+    <!-- Bulk Selection -->
+    <string name="selection_count_fmt">%1$d Selected</string>
+    <string name="btn_bulk_move">Move</string>
+    <string name="btn_bulk_delete">Delete</string>
+    <string name="dialog_bulk_delete_title">Delete %1$d Recipes?</string>
+    <string name="dialog_bulk_delete_msg">Are you sure you want to delete the selected recipes from your cookbook?</string>
+    <string name="dialog_move_title">Move Selected Recipes</string>
+    <string name="btn_confirm_move">Move</string>
+    <string name="msg_recipes_moved">Moved %1$d recipes</string>
+    <string name="msg_recipes_deleted">Deleted %1$d recipes</string>
+
+    <!-- Add / Edit Recipe Form -->
+    <string name="label_recipe_name">Recipe Name</string>
+    <string name="hint_recipe_name">e.g. Creamy Tuscan Chicken</string>
+    <string name="label_category">Category</string>
+    <string name="hint_category">Select a category or create new</string>
+    <string name="label_new_category">New Category Name</string>
+    <string name="hint_new_category">e.g. Soups &amp; Stews</string>
+    <string name="label_prep_time">Cooking Time</string>
+    <string name="hint_prep_time">e.g. 25 mins</string>
+    <string name="label_portions">Portions</string>
+    <string name="hint_portions">e.g. 4 Servings</string>
+    <string name="label_source_link">Link</string>
+    <string name="hint_source_link">e.g. https://www.allrecipes.com/...</string>
+    <string name="label_scraped_text">Text</string>
+    <string name="hint_scraped_text">Full raw scraped text from web page...</string>
+    <string name="label_ingredients">Ingredients</string>
+    <string name="hint_ingredients">Enter each ingredient on a new line...</string>
+    <string name="label_instructions">Instructions</string>
+    <string name="hint_instructions">Enter step-by-step instructions...</string>
+    <string name="btn_save_recipe">Save Recipe</string>
+    <string name="btn_update_recipe">Update Recipe</string>
+    <string name="msg_recipe_saved">Recipe saved successfully!</string>
+    <string name="msg_recipe_updated">Recipe updated successfully!</string>
+    <string name="msg_uncategorized_default">Category empty. Saved to Uncategorized.</string>
+    <string name="msg_draft_imported">Shared recipe draft imported! Please verify details and save.</string>
+    <string name="add_photo">Tap to Add Photo</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="author_tag">Recipe by Emilia • ReciMe Cook</string>
+
+    <string name="recipe_1_title">Creamy Avocado Herb Pasta</string>
+    <string name="recipe_1_subtitle">Quick 20-min avocado fettuccine</string>
+    <string name="recipe_2_title">Classic Spaghetti Carbonara</string>
+    <string name="recipe_2_subtitle">Italian pasta with pancetta &amp; parmesan</string>
+    <string name="recipe_3_title">Berry Vanilla Cheesecake</string>
+    <string name="recipe_3_subtitle">Baked cheesecake topped with fresh berries</string>
+    <string name="recipe_4_title">Chocolate Lava Cake</string>
+    <string name="recipe_4_subtitle">Warm cake with warm molten chocolate center</string>
+    <string name="recipe_5_title">Grilled Lemon Herb Chicken</string>
+    <string name="recipe_5_subtitle">Tender chicken breast with citrus garlic glaze</string>
+    <string name="recipe_6_title">Fluffy Berry Pancakes</string>
+    <string name="recipe_6_subtitle">Golden pancakes with maple syrup &amp; blueberries</string>
+
+    <string name="rating_5_0">5.0 • 20 mins</string>
+    <string name="rating_4_8">4.8 • 25 mins</string>
+    <string name="rating_4_9">4.9 • 45 mins</string>
+    <string name="rating_4_7">4.7 • 15 mins</string>
+
+    <!-- Recipe Details -->
+    <string name="sample_recipe_title">Creamy Avocado Herb Pasta</string>
+    <string name="category_label">Category</string>
+    <string name="sample_category">Pasta &amp; Italian</string>
+    <string name="time_label">Time</string>
+    <string name="sample_time">20 mins</string>
+    <string name="portions_label">Portions</string>
+    <string name="sample_portions">2 Servings</string>
+
+    <string name="ingredients_heading">Ingredients</string>
+    <string name="ingredient_1">• 200g Fettuccine or Spaghetti</string>
+    <string name="ingredient_2">• 2 ripe Avocados, pitted</string>
+    <string name="ingredient_3">• 2 cloves Garlic, minced</string>
+    <string name="ingredient_4">• &#189; cup Fresh Basil leaves</string>
+    <string name="ingredient_5">• 2 tbsp Extra Virgin Olive Oil</string>
+    <string name="ingredient_6">• 1 tbsp Fresh Lemon Juice</string>
+    <string name="ingredient_7">• &#8531; cup Grated Parmesan cheese</string>
+    <string name="ingredient_8">• Salt and freshly ground Black Pepper to taste</string>
+
+    <string name="instructions_heading">Instructions</string>
+    <string name="step_1">1. Cook pasta in a large pot of boiling salted water according to package instructions until al dente.</string>
+    <string name="step_2">2. In a food processor or blender, combine avocados, garlic, basil, olive oil, and lemon juice. Blend until smooth and creamy.</string>
+    <string name="step_3">3. Drain cooked pasta, reserving &#188; cup of pasta water.</string>
+    <string name="step_4">4. Toss hot pasta with avocado cream sauce, adding reserved water if needed. Season with salt, pepper, and parmesan.</string>
+    <string name="step_5">5. Garnish with fresh basil leaves and extra parmesan cheese before serving warm.</string>
+
+    <!-- Accessibility / Content Descriptions -->
+    <string name="cd_star_rating">Star rating</string>
+    <string name="cd_favorite">Favorite recipe</string>
+    <string name="cd_open_recipe">Open recipe details</string>
+    <string name="cd_open_category">Open category collection</string>
+    <string name="cd_recipe_photo">Recipe Photo Preview</string>
+</resources>

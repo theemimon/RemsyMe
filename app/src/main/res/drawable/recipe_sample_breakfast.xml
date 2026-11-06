@@ -1,0 +1,34 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+  <!-- Background -->
+  <path
+      android:fillColor="#FFF8E1"
+      android:pathData="M0,0h200v150H0z"/>
+  <!-- Plate -->
+  <path
+      android:fillColor="#FAF5E8"
+      android:pathData="M100,30 C150,30 180,50 180,75 C180,100 150,120 100,120 C50,120 20,100 20,75 C20,50 50,30 100,30 Z"/>
+  <!-- Pancakes Stack -->
+  <path
+      android:fillColor="#FFE082"
+      android:pathData="M50,80 C50,70 150,70 150,80 C150,90 50,90 50,80 Z"/>
+  <path
+      android:fillColor="#FFCA28"
+      android:pathData="M55,70 C55,60 145,60 145,70 C145,80 55,80 55,70 Z"/>
+  <path
+      android:fillColor="#FFB300"
+      android:pathData="M60,60 C60,50 140,50 140,60 C140,70 60,70 60,60 Z"/>
+  <!-- Butter Square -->
+  <path
+      android:fillColor="#FFF59D"
+      android:pathData="M90,48 h20 v12 h-20 z"/>
+  <!-- Syrup Drizzle -->
+  <path
+      android:fillColor="#795548"
+      android:pathData="M95,58 Q100,68 95,78 T105,88"
+      android:strokeColor="#795548"
+      android:strokeWidth="3"/>
+</vector>

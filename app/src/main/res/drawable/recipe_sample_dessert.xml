@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="150dp"
+    android:viewportWidth="200"
+    android:viewportHeight="150">
+  <!-- Background -->
+  <path
+      android:fillColor="#FCE4EC"
+      android:pathData="M0,0h200v150H0z"/>
+  <!-- Cheesecake Base -->
+  <path
+      android:fillColor="#F5EFDF"
+      android:pathData="M30,90 L170,90 L150,130 L50,130 Z"/>
+  <!-- Creamy Filling -->
+  <path
+      android:fillColor="#FFFDF6"
+      android:pathData="M40,50 L160,50 L170,90 L30,90 Z"/>
+  <!-- Berry Topping -->
+  <path
+      android:fillColor="#E53935"
+      android:pathData="M60,45 C80,35 120,35 140,45 C150,50 130,55 100,52 C70,55 50,50 60,45 Z"/>
+  <!-- Berries -->
+  <path
+      android:fillColor="#C2185B"
+      android:pathData="M85,38 C90,38 90,43 85,43 C80,43 80,38 85,38 Z"/>
+  <path
+      android:fillColor="#C2185B"
+      android:pathData="M105,36 C110,36 110,41 105,41 C100,41 100,36 105,36 Z"/>
+  <path
+      android:fillColor="#C2185B"
+      android:pathData="M120,40 C125,40 125,45 120,45 C115,45 115,40 120,40 Z"/>
+</vector>
