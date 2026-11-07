@@ -1,5 +1,6 @@
 package me.remsy;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -22,13 +23,15 @@ public class WebRecipeScraper {
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    public static void scrapeUrl(String urlString, ScrapeCallback callback) {
+    public static void scrapeUrl(Context context, String urlString, ScrapeCallback callback) {
+        Context appContext = context != null ? context.getApplicationContext() : null;
         executor.execute(() -> {
             String fullPageText = "";
             Recipe parsedDraft = null;
+            String html = null;
 
             try {
-                String html = fetchHtml(urlString);
+                html = fetchHtml(urlString);
                 if (html != null && !html.trim().isEmpty()) {
                     parsedDraft = RecipeScraperRegistry.forUrl(urlString).scrape(urlString, html);
                     if (parsedDraft != null) {
@@ -51,6 +54,14 @@ public class WebRecipeScraper {
 
             parsedDraft.setSourceLink(urlString);
             parsedDraft.setScrapedText(fullPageText);
+
+            String imageUrl = RecipeScrapersJava.extractImageUrl(html);
+            if (imageUrl != null) {
+                String cachedImageUri = RemoteImageDownloader.downloadToFileUri(appContext, imageUrl);
+                if (cachedImageUri != null) {
+                    parsedDraft.setImageUri(cachedImageUri);
+                }
+            }
 
             final String finalText = fullPageText;
             final Recipe finalDraft = parsedDraft;

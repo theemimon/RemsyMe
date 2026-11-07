@@ -70,4 +70,40 @@ public class RecipeScrapersJavaTest {
         assertEquals("Uncategorized", recipe.getCategory());
         assertTrue(recipe.getInstructions().contains("random paragraph"));
     }
+
+    @Test
+    public void extractsImageUrlFromJsonLdRecipeImageField() {
+        String html = "<html><head>"
+                + "<script type=\"application/ld+json\">"
+                + "{\"@context\":\"https://schema.org/\",\"@type\":\"Recipe\",\"name\":\"Test Cake\","
+                + "\"image\":\"https://example.com/cake.jpg\"}"
+                + "</script></head><body></body></html>";
+
+        assertEquals("https://example.com/cake.jpg", RecipeScrapersJava.extractImageUrl(html));
+    }
+
+    @Test
+    public void extractsImageUrlFromJsonLdImageArrayOfObjects() {
+        String html = "<html><head>"
+                + "<script type=\"application/ld+json\">"
+                + "{\"@type\":\"Recipe\",\"name\":\"Test Cake\","
+                + "\"image\":[{\"@type\":\"ImageObject\",\"url\":\"https://example.com/cake-wide.jpg\"}]}"
+                + "</script></head><body></body></html>";
+
+        assertEquals("https://example.com/cake-wide.jpg", RecipeScrapersJava.extractImageUrl(html));
+    }
+
+    @Test
+    public void fallsBackToOgImageWhenNoJsonLdImagePresent() {
+        String html = "<html><head><meta property=\"og:image\" content=\"https://example.com/og.jpg\"></head><body></body></html>";
+
+        assertEquals("https://example.com/og.jpg", RecipeScrapersJava.extractImageUrl(html));
+    }
+
+    @Test
+    public void returnsNullWhenNoImageCandidateExists() {
+        String html = "<html><body><p>No images here.</p></body></html>";
+
+        assertEquals(null, RecipeScrapersJava.extractImageUrl(html));
+    }
 }

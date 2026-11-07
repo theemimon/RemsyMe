@@ -90,6 +90,84 @@ public class RecipeScrapersJava {
         return type.equalsIgnoreCase("Recipe") || type.contains("Recipe");
     }
 
+    /**
+     * Best-effort cover-image URL for a scraped page: prefers the JSON-LD Recipe's own
+     * {@code image} field, then falls back to {@code og:image}/{@code twitter:image} meta tags.
+     * Returns {@code null} when html is empty or no candidate is found.
+     */
+    static String extractImageUrl(String html) {
+        if (html == null || html.trim().isEmpty()) return null;
+
+        String jsonLdImage = extractImageUrlFromJsonLd(html);
+        if (jsonLdImage != null && !jsonLdImage.isEmpty()) return jsonLdImage;
+
+        String ogImage = MetaTagExtractor.extractMetaContent(html, "og:image");
+        if (ogImage != null && !ogImage.isEmpty()) return ogImage;
+
+        return MetaTagExtractor.extractMetaContent(html, "twitter:image");
+    }
+
+    private static String extractImageUrlFromJsonLd(String html) {
+        Pattern jsonLdPattern = Pattern.compile("<script[^>]*type=[\"']application/ld\\+json[\"'][^>]*>(.*?)</script>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        Matcher matcher = jsonLdPattern.matcher(html);
+
+        while (matcher.find()) {
+            String jsonContent = matcher.group(1);
+            if (jsonContent == null) continue;
+            jsonContent = jsonContent.trim();
+
+            try {
+                if (jsonContent.startsWith("[")) {
+                    JSONArray array = new JSONArray(jsonContent);
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.optJSONObject(i);
+                        if (obj != null && isRecipeJson(obj)) {
+                            String image = imageFromJsonObj(obj);
+                            if (image != null) return image;
+                        }
+                    }
+                } else if (jsonContent.startsWith("{")) {
+                    JSONObject obj = new JSONObject(jsonContent);
+                    if (obj.has("@graph")) {
+                        JSONArray graph = obj.optJSONArray("@graph");
+                        if (graph != null) {
+                            for (int i = 0; i < graph.length(); i++) {
+                                JSONObject item = graph.optJSONObject(i);
+                                if (item != null && isRecipeJson(item)) {
+                                    String image = imageFromJsonObj(item);
+                                    if (image != null) return image;
+                                }
+                            }
+                        }
+                    } else if (isRecipeJson(obj)) {
+                        String image = imageFromJsonObj(obj);
+                        if (image != null) return image;
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        return null;
+    }
+
+    private static String imageFromJsonObj(JSONObject obj) {
+        Object imageObj = obj.opt("image");
+        if (imageObj instanceof String) {
+            String s = (String) imageObj;
+            return s.isEmpty() ? null : s;
+        } else if (imageObj instanceof JSONArray) {
+            JSONArray arr = (JSONArray) imageObj;
+            if (arr.length() > 0) {
+                Object first = arr.opt(0);
+                if (first instanceof String) return (String) first;
+                if (first instanceof JSONObject) return ((JSONObject) first).optString("url", null);
+            }
+        } else if (imageObj instanceof JSONObject) {
+            return ((JSONObject) imageObj).optString("url", null);
+        }
+        return null;
+    }
+
     private static Recipe extractFromJsonObj(JSONObject obj, String url, String rawScrapedText) {
         String title = cleanText(obj.optString("name", ""));
         if (title.isEmpty()) {
