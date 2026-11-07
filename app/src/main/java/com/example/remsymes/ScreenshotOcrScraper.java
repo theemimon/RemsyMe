@@ -1,7 +1,11 @@
 package com.example.remsymes;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
 
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.TextRecognition;
@@ -26,7 +30,8 @@ public final class ScreenshotOcrScraper {
 
     public static void scrapeImage(Context context, Uri imageUri, Callback callback) {
         try {
-            InputImage image = InputImage.fromFilePath(context, imageUri);
+            Bitmap bitmap = loadSoftwareBitmap(context, imageUri);
+            InputImage image = InputImage.fromBitmap(bitmap, 0);
             TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
             recognizer.process(image)
                     .addOnSuccessListener(visionText -> {
@@ -39,5 +44,25 @@ public final class ScreenshotOcrScraper {
         } catch (IOException e) {
             callback.onError(e.getMessage());
         }
+    }
+
+    /**
+     * Decodes the image forcing a software (ARGB_8888) bitmap config. Letting the OS pick
+     * defaults can yield a hardware-backed bitmap, which ML Kit's text recognizer cannot read
+     * pixel data from and crashes on with an obscure internal NullPointerException.
+     */
+    private static Bitmap loadSoftwareBitmap(Context context, Uri uri) throws IOException {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), uri);
+            return ImageDecoder.decodeBitmap(source, (decoder, info, src) ->
+                    decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE));
+        }
+
+        @SuppressWarnings("deprecation")
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+        if (bitmap != null && bitmap.getConfig() == Bitmap.Config.HARDWARE) {
+            bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+        }
+        return bitmap;
     }
 }

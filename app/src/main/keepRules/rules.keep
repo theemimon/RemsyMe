@@ -10,3 +10,14 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# ML Kit's on-device Text Recognition discovers its components (registrars, the
+# bundled recognizer, etc.) via reflection/service-loading at runtime. Without
+# these, R8 renames/strips classes the lookup depends on, and the first call
+# into ML Kit throws an obscure internal NullPointerException in release builds
+# only (verified: crashes with R8 minification, works fine in debug builds).
+-keep class com.google.mlkit.** { *; }
+-keep class com.google.android.gms.internal.mlkit_common.** { *; }
+-keep class com.google.android.gms.internal.mlkit_vision_common.** { *; }
+-keep class com.google.android.gms.internal.mlkit_vision_text_common.** { *; }
+-keep class com.google.android.gms.internal.mlkit_vision_text_bundled_common.** { *; }
