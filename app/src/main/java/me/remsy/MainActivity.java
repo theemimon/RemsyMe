@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         Uri imageUri = SharedImageExtractor.extractImageUri(intent);
         if (imageUri != null) {
+            ImageUriPermissionHelper.persistReadPermission(getContentResolver(), imageUri);
             Toast.makeText(this, "Reading recipe from screenshot...", Toast.LENGTH_SHORT).show();
             ScreenshotOcrScraper.scrapeImage(getApplicationContext(), imageUri, new ScreenshotOcrScraper.Callback() {
                 @Override
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
             args.putString("draftInstructions", draft.getInstructions());
             args.putString("draftSourceLink", draft.getSourceLink());
             args.putString("draftScrapedText", draft.getScrapedText());
+            args.putString("draftImageUri", draft.getImageUri());
 
             navController.navigate(R.id.AddRecipeFragment, args);
         }

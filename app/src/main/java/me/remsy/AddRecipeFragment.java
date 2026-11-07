@@ -117,6 +117,7 @@ public class AddRecipeFragment extends Fragment {
             String draftCategory = getArguments().getString("draftCategory");
             String draftSourceLink = getArguments().getString("draftSourceLink");
             String draftScrapedText = getArguments().getString("draftScrapedText");
+            String draftImageUri = getArguments().getString("draftImageUri");
 
             boolean hasDraft = (draftName != null && !draftName.isEmpty())
                     || (draftIngredients != null && !draftIngredients.isEmpty())
@@ -148,6 +149,12 @@ public class AddRecipeFragment extends Fragment {
                 }
                 if (draftScrapedText != null) {
                     binding.etScrapedText.setText(draftScrapedText);
+                }
+                if (draftImageUri != null
+                        && (draftImageUri.startsWith("content://") || draftImageUri.startsWith("file://"))) {
+                    selectedImageUri = Uri.parse(draftImageUri);
+                    RecipeImageBinder.bind(binding.ivRecipePicturePreview, draftImageUri);
+                    binding.tvAddPicturePrompt.setText(R.string.change_photo);
                 }
 
                 Toast.makeText(requireContext(), R.string.msg_draft_imported, Toast.LENGTH_LONG).show();
