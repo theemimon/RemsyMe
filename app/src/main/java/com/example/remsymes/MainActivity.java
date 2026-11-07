@@ -1,6 +1,7 @@
 package com.example.remsymes;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -46,22 +47,39 @@ public class MainActivity extends AppCompatActivity {
     private void handleIncomingSharedIntent(Intent intent) {
         if (intent == null) return;
         String action = intent.getAction();
+        if (!Intent.ACTION_SEND.equals(action)) return;
 
-        if (Intent.ACTION_SEND.equals(action)) {
-            String sharedText = SharedIntentTextExtractor.extractSharedText(intent);
-
-            if (sharedText != null && !sharedText.trim().isEmpty()) {
-                String url = UrlExtractor.extractUrl(sharedText);
-                if (url != null) {
-                    Toast.makeText(this, "Scraping web page text...", Toast.LENGTH_SHORT).show();
-                    WebRecipeScraper.scrapeUrl(url, (scrapedText, draftRecipe) ->
-                            binding.getRoot().post(() -> navigateToAddRecipeDraft(draftRecipe))
-                    );
-                } else {
-                    Recipe draft = RecipeParser.parseSharedText(sharedText);
-                    draft.setScrapedText(sharedText);
-                    binding.getRoot().post(() -> navigateToAddRecipeDraft(draft));
+        Uri imageUri = SharedImageExtractor.extractImageUri(intent);
+        if (imageUri != null) {
+            Toast.makeText(this, "Reading recipe from screenshot...", Toast.LENGTH_SHORT).show();
+            ScreenshotOcrScraper.scrapeImage(getApplicationContext(), imageUri, new ScreenshotOcrScraper.Callback() {
+                @Override
+                public void onSuccess(Recipe draftRecipe) {
+                    binding.getRoot().post(() -> navigateToAddRecipeDraft(draftRecipe));
                 }
+
+                @Override
+                public void onError(String message) {
+                    binding.getRoot().post(() ->
+                            Toast.makeText(MainActivity.this, "Couldn't read text from that image", Toast.LENGTH_SHORT).show());
+                }
+            });
+            return;
+        }
+
+        String sharedText = SharedIntentTextExtractor.extractSharedText(intent);
+
+        if (sharedText != null && !sharedText.trim().isEmpty()) {
+            String url = UrlExtractor.extractUrl(sharedText);
+            if (url != null) {
+                Toast.makeText(this, "Scraping web page text...", Toast.LENGTH_SHORT).show();
+                WebRecipeScraper.scrapeUrl(url, (scrapedText, draftRecipe) ->
+                        binding.getRoot().post(() -> navigateToAddRecipeDraft(draftRecipe))
+                );
+            } else {
+                Recipe draft = RecipeParser.parseSharedText(sharedText);
+                draft.setScrapedText(sharedText);
+                binding.getRoot().post(() -> navigateToAddRecipeDraft(draft));
             }
         }
     }
