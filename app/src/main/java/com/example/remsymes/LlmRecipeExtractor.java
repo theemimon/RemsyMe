@@ -36,7 +36,7 @@ public class LlmRecipeExtractor {
         }
 
         // 2. Extract Cooking Time & Servings
-        Pattern timePattern = Pattern.compile("(?i)(prep|cook|total)?\\s*time\\s*:?\\s*(\\d+\\s*(mins?|minutes?|hours?|hrs?|h|m))");
+        Pattern timePattern = Pattern.compile("(?i)(prep|cook|total)?\\s*time\\s*:?\\s*(\\d+\\s*(minutes?|mins?|hours?|hrs?|h|m))");
         Pattern yieldPattern = Pattern.compile("(?i)(servings?|yield|serves|portions?)\\s*:?\\s*(\\d+\\s*(servings?|portions?|people)?)");
 
         for (String line : lines) {
@@ -137,10 +137,12 @@ public class LlmRecipeExtractor {
         return isIngredientHeader(lower) || isInstructionHeader(lower) || lower.contains("nutrition") || lower.contains("reviews") || lower.contains("comments");
     }
 
+    private static final Pattern WEIGHT_UNIT_PATTERN = Pattern.compile("\\d\\s*(g|oz)\\b", Pattern.CASE_INSENSITIVE);
+
     private static boolean isIngredientLine(String l) {
         String lower = l.toLowerCase();
         return l.matches("^[0-9½⅓¼¾•\\-*].*") || lower.contains("cup") || lower.contains("tbsp")
-                || lower.contains("tsp") || lower.contains("grams") || lower.contains("g ") || lower.contains("oz ")
+                || lower.contains("tsp") || lower.contains("grams") || WEIGHT_UNIT_PATTERN.matcher(l).find()
                 || lower.contains("cloves") || lower.contains("pinch") || lower.contains("tablespoon") || lower.contains("teaspoon");
     }
 

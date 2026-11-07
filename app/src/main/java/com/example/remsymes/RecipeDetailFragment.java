@@ -1,6 +1,5 @@
 package com.example.remsymes;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -146,21 +145,7 @@ public class RecipeDetailFragment extends Fragment {
         updateFavoriteUI(recipe.isFavorite());
 
         if (recipe.getImageUri() != null && !recipe.getImageUri().isEmpty()) {
-            if (recipe.getImageUri().startsWith("content://") || recipe.getImageUri().startsWith("file://")) {
-                try {
-                    binding.ivRecipePicture.setImageURI(Uri.parse(recipe.getImageUri()));
-                } catch (Exception e) {
-                    binding.ivRecipePicture.setImageResource(R.drawable.recipe_sample_image);
-                }
-            } else if ("recipe_sample_dessert".equals(recipe.getImageUri())) {
-                binding.ivRecipePicture.setImageResource(R.drawable.recipe_sample_dessert);
-            } else if ("recipe_sample_main".equals(recipe.getImageUri())) {
-                binding.ivRecipePicture.setImageResource(R.drawable.recipe_sample_main);
-            } else if ("recipe_sample_breakfast".equals(recipe.getImageUri())) {
-                binding.ivRecipePicture.setImageResource(R.drawable.recipe_sample_breakfast);
-            } else {
-                binding.ivRecipePicture.setImageResource(R.drawable.recipe_sample_image);
-            }
+            RecipeImageBinder.bind(binding.ivRecipePicture, recipe.getImageUri());
         }
     }
 

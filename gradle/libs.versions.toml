@@ -9,11 +9,15 @@ constraintlayout = "2.1.4"
 activityKtx = "1.13.0"
 navigationFragment = "2.6.0"
 navigationUi = "2.6.0"
+mockitoCore = "5.24.0"
+json = "20231013"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoCore" }
+json = { group = "org.json", name = "json", version.ref = "json" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }

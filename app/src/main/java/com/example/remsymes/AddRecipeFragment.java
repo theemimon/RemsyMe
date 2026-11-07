@@ -31,6 +31,7 @@ public class AddRecipeFragment extends Fragment {
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
+                    ImageUriPermissionHelper.persistReadPermission(requireContext().getContentResolver(), uri);
                     selectedImageUri = uri;
                     binding.ivRecipePicturePreview.setImageURI(uri);
                     binding.tvAddPicturePrompt.setText(R.string.change_photo);

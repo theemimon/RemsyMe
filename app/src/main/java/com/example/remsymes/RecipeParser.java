@@ -58,7 +58,7 @@ public class RecipeParser {
 
             // Extract time
             if (time.isEmpty() && (lower.contains("prep") || lower.contains("cook") || lower.contains("time") || lower.contains("min"))) {
-                String extractedTime = extractPattern(line, "(\\d+\\s*(mins?|minutes?|hours?|hrs?|h|m))");
+                String extractedTime = extractPattern(line, "(\\d+\\s*(minutes?|mins?|hours?|hrs?|h|m))");
                 if (!extractedTime.isEmpty()) {
                     time = extractedTime;
                 } else if (lower.contains("time:")) {
@@ -124,10 +124,12 @@ public class RecipeParser {
                 || lower.contains("step") || lower.contains("preparation") || lower.contains("how to make");
     }
 
+    private static final Pattern WEIGHT_UNIT_PATTERN = Pattern.compile("\\d\\s*(g|oz)\\b", Pattern.CASE_INSENSITIVE);
+
     private static boolean isIngredientLine(String line) {
         String lower = line.toLowerCase();
         return line.matches("^[0-9½⅓¼¾•\\-*].*") || lower.contains("cup") || lower.contains("tbsp")
-                || lower.contains("tsp") || lower.contains("grams") || lower.contains("g ") || lower.contains("oz ")
+                || lower.contains("tsp") || lower.contains("grams") || WEIGHT_UNIT_PATTERN.matcher(line).find()
                 || lower.contains("pinch") || lower.contains("cloves") || lower.contains("diced");
     }
 

@@ -1,6 +1,5 @@
 package com.example.remsymes;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -122,25 +121,7 @@ public class CookbookFragment extends Fragment {
     }
 
     private void bindPreviewImage(ImageView imageView, String imageUri) {
-        if (imageUri != null && !imageUri.isEmpty()) {
-            if (imageUri.startsWith("content://") || imageUri.startsWith("file://")) {
-                try {
-                    imageView.setImageURI(Uri.parse(imageUri));
-                } catch (Exception e) {
-                    imageView.setImageResource(R.drawable.recipe_sample_image);
-                }
-            } else if ("recipe_sample_dessert".equals(imageUri)) {
-                imageView.setImageResource(R.drawable.recipe_sample_dessert);
-            } else if ("recipe_sample_main".equals(imageUri)) {
-                imageView.setImageResource(R.drawable.recipe_sample_main);
-            } else if ("recipe_sample_breakfast".equals(imageUri)) {
-                imageView.setImageResource(R.drawable.recipe_sample_breakfast);
-            } else {
-                imageView.setImageResource(R.drawable.recipe_sample_image);
-            }
-        } else {
-            imageView.setImageResource(R.drawable.recipe_sample_image);
-        }
+        RecipeImageBinder.bind(imageView, imageUri);
     }
 
     private boolean showDeleteCollectionDialog(String collectionName) {

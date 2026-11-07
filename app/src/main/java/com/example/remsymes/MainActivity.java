@@ -1,6 +1,5 @@
 package com.example.remsymes;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -15,9 +14,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.remsymes.databinding.ActivityMainBinding;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
         String action = intent.getAction();
 
         if (Intent.ACTION_SEND.equals(action)) {
-            String sharedText = extractSharedTextFromIntent(intent);
+            String sharedText = SharedIntentTextExtractor.extractSharedText(intent);
 
             if (sharedText != null && !sharedText.trim().isEmpty()) {
-                String url = extractUrl(sharedText);
+                String url = UrlExtractor.extractUrl(sharedText);
                 if (url != null) {
                     Toast.makeText(this, "Scraping web page text...", Toast.LENGTH_SHORT).show();
                     WebRecipeScraper.scrapeUrl(url, (scrapedText, draftRecipe) ->
@@ -68,54 +64,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    private String extractUrl(String text) {
-        if (text == null) return null;
-        Pattern pattern = Pattern.compile("https?://\\S+", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            return matcher.group(0);
-        }
-        return null;
-    }
-
-    private String extractSharedTextFromIntent(Intent intent) {
-        if (intent == null) return null;
-
-        // 1. Try EXTRA_TEXT
-        String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-        if (text != null && !text.trim().isEmpty()) {
-            return text;
-        }
-
-        // 2. Try EXTRA_SUBJECT
-        String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
-        if (subject != null && !subject.trim().isEmpty()) {
-            return subject;
-        }
-
-        // 3. Try CharSequence EXTRA_TEXT
-        CharSequence charSeq = intent.getCharSequenceExtra(Intent.EXTRA_TEXT);
-        if (charSeq != null && !charSeq.toString().trim().isEmpty()) {
-            return charSeq.toString();
-        }
-
-        // 4. Try ClipData
-        ClipData clipData = intent.getClipData();
-        if (clipData != null && clipData.getItemCount() > 0) {
-            ClipData.Item item = clipData.getItemAt(0);
-            if (item != null) {
-                if (item.getText() != null && !item.getText().toString().trim().isEmpty()) {
-                    return item.getText().toString();
-                }
-                if (item.getUri() != null) {
-                    return item.getUri().toString();
-                }
-            }
-        }
-
-        return null;
     }
 
     private void navigateToAddRecipeDraft(Recipe draft) {

@@ -32,6 +32,7 @@ public class EditRecipeFragment extends Fragment {
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
+                    ImageUriPermissionHelper.persistReadPermission(requireContext().getContentResolver(), uri);
                     selectedImageUri = uri;
                     binding.ivRecipePicturePreview.setImageURI(uri);
                 }
@@ -159,21 +160,7 @@ public class EditRecipeFragment extends Fragment {
         if (recipe.getScrapedText() != null) binding.etScrapedText.setText(recipe.getScrapedText());
 
         if (recipe.getImageUri() != null && !recipe.getImageUri().isEmpty()) {
-            if (recipe.getImageUri().startsWith("content://") || recipe.getImageUri().startsWith("file://")) {
-                try {
-                    binding.ivRecipePicturePreview.setImageURI(Uri.parse(recipe.getImageUri()));
-                } catch (Exception e) {
-                    binding.ivRecipePicturePreview.setImageResource(R.drawable.recipe_sample_image);
-                }
-            } else if ("recipe_sample_dessert".equals(recipe.getImageUri())) {
-                binding.ivRecipePicturePreview.setImageResource(R.drawable.recipe_sample_dessert);
-            } else if ("recipe_sample_main".equals(recipe.getImageUri())) {
-                binding.ivRecipePicturePreview.setImageResource(R.drawable.recipe_sample_main);
-            } else if ("recipe_sample_breakfast".equals(recipe.getImageUri())) {
-                binding.ivRecipePicturePreview.setImageResource(R.drawable.recipe_sample_breakfast);
-            } else {
-                binding.ivRecipePicturePreview.setImageResource(R.drawable.recipe_sample_image);
-            }
+            RecipeImageBinder.bind(binding.ivRecipePicturePreview, recipe.getImageUri());
         }
     }
 

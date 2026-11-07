@@ -15,7 +15,7 @@ public class RecipeScrapersJava {
             return LlmRecipeExtractor.extractRecipeFromText(url, url);
         }
 
-        String rawScrapedText = WebRecipeScraper.extractRawTextFromHtml(html);
+        String rawScrapedText = HtmlTextExtractor.extractRawTextFromHtml(html);
 
         // 1. JSON-LD Schema.org Recipe (Universal recipe-scrapers strategy)
         Recipe jsonLdRecipe = parseJsonLdRecipe(html, url, rawScrapedText);

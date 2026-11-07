@@ -65,13 +65,23 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
-            db.execSQL("ALTER TABLE " + TABLE_RECIPES + " ADD COLUMN " + COLUMN_SOURCE_LINK + " TEXT");
-            db.execSQL("ALTER TABLE " + TABLE_RECIPES + " ADD COLUMN " + COLUMN_SCRAPED_TEXT + " TEXT");
-        } else {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPES);
-            onCreate(db);
+        for (String statement : buildUpgradeStatements(oldVersion, newVersion)) {
+            db.execSQL(statement);
         }
+    }
+
+    /**
+     * Builds the additive schema-migration statements for an upgrade from {@code oldVersion}
+     * to {@code newVersion}. Never destroys existing data (no DROP/recreate) — unknown future
+     * version bumps simply result in no statements rather than wiping the table.
+     */
+    static List<String> buildUpgradeStatements(int oldVersion, int newVersion) {
+        List<String> statements = new ArrayList<>();
+        if (oldVersion < 2 && newVersion >= 2) {
+            statements.add("ALTER TABLE " + TABLE_RECIPES + " ADD COLUMN " + COLUMN_SOURCE_LINK + " TEXT");
+            statements.add("ALTER TABLE " + TABLE_RECIPES + " ADD COLUMN " + COLUMN_SCRAPED_TEXT + " TEXT");
+        }
+        return statements;
     }
 
     private void seedDefaultRecipes(SQLiteDatabase db) {
@@ -126,17 +136,7 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
     public long insertRecipe(Recipe recipe) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_NAME, recipe.getName());
-        cv.put(COLUMN_CATEGORY, recipe.getCategory() != null ? recipe.getCategory() : "Uncategorized");
-        cv.put(COLUMN_PREP_TIME, recipe.getPrepTime());
-        cv.put(COLUMN_PORTIONS, recipe.getPortions());
-        cv.put(COLUMN_RATING, recipe.getRating());
-        cv.put(COLUMN_IS_FAVORITE, recipe.isFavorite() ? 1 : 0);
-        cv.put(COLUMN_IMAGE_URI, recipe.getImageUri());
-        cv.put(COLUMN_INGREDIENTS, recipe.getIngredients());
-        cv.put(COLUMN_INSTRUCTIONS, recipe.getInstructions());
-        cv.put(COLUMN_SOURCE_LINK, recipe.getSourceLink() != null ? recipe.getSourceLink() : "");
-        cv.put(COLUMN_SCRAPED_TEXT, recipe.getScrapedText() != null ? recipe.getScrapedText() : "");
+        populateContentValues(cv, recipe);
 
         long id = db.insert(TABLE_RECIPES, null, cv);
         recipe.setId(id);
@@ -190,20 +190,35 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public List<String> getAllCategories() {
-        List<String> categories = new ArrayList<>();
-        categories.add("Faves");
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT DISTINCT " + COLUMN_CATEGORY + " FROM " + TABLE_RECIPES + " ORDER BY " + COLUMN_CATEGORY + " ASC", null);
 
+        List<String> rawCategories = new ArrayList<>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                String cat = cursor.getString(0);
+                rawCategories.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return buildCategoryList(rawCategories);
+    }
+
+    /**
+     * Pure list-building logic behind {@link #getAllCategories()}: always leads with "Faves",
+     * folds in distinct categories found in the DB (skipping blanks/duplicates/"Faves" itself),
+     * then guarantees the default starter categories are present.
+     */
+    static List<String> buildCategoryList(List<String> rawCategoriesFromDb) {
+        List<String> categories = new ArrayList<>();
+        categories.add("Faves");
+
+        if (rawCategoriesFromDb != null) {
+            for (String cat : rawCategoriesFromDb) {
                 if (cat != null && !cat.trim().isEmpty() && !categories.contains(cat) && !"Faves".equalsIgnoreCase(cat)) {
                     categories.add(cat);
                 }
-            } while (cursor.moveToNext());
-            cursor.close();
+            }
         }
 
         if (!categories.contains("Pasta & Italian")) categories.add("Pasta & Italian");
@@ -232,17 +247,7 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
     public int updateRecipe(Recipe recipe) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_NAME, recipe.getName());
-        cv.put(COLUMN_CATEGORY, recipe.getCategory());
-        cv.put(COLUMN_PREP_TIME, recipe.getPrepTime());
-        cv.put(COLUMN_PORTIONS, recipe.getPortions());
-        cv.put(COLUMN_RATING, recipe.getRating());
-        cv.put(COLUMN_IS_FAVORITE, recipe.isFavorite() ? 1 : 0);
-        cv.put(COLUMN_IMAGE_URI, recipe.getImageUri());
-        cv.put(COLUMN_INGREDIENTS, recipe.getIngredients());
-        cv.put(COLUMN_INSTRUCTIONS, recipe.getInstructions());
-        cv.put(COLUMN_SOURCE_LINK, recipe.getSourceLink());
-        cv.put(COLUMN_SCRAPED_TEXT, recipe.getScrapedText());
+        populateContentValues(cv, recipe);
 
         return db.update(TABLE_RECIPES, cv, COLUMN_ID + "=?", new String[]{String.valueOf(recipe.getId())});
     }
@@ -288,7 +293,22 @@ public class RecipeDatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    private Recipe cursorToRecipe(Cursor cursor) {
+    /** Pure mapping of a {@link Recipe} onto a {@link ContentValues}, shared by insert/update. */
+    static void populateContentValues(ContentValues cv, Recipe recipe) {
+        cv.put(COLUMN_NAME, recipe.getName());
+        cv.put(COLUMN_CATEGORY, recipe.getCategory() != null && !recipe.getCategory().isEmpty() ? recipe.getCategory() : "Uncategorized");
+        cv.put(COLUMN_PREP_TIME, recipe.getPrepTime());
+        cv.put(COLUMN_PORTIONS, recipe.getPortions());
+        cv.put(COLUMN_RATING, recipe.getRating());
+        cv.put(COLUMN_IS_FAVORITE, recipe.isFavorite() ? 1 : 0);
+        cv.put(COLUMN_IMAGE_URI, recipe.getImageUri());
+        cv.put(COLUMN_INGREDIENTS, recipe.getIngredients());
+        cv.put(COLUMN_INSTRUCTIONS, recipe.getInstructions());
+        cv.put(COLUMN_SOURCE_LINK, recipe.getSourceLink() != null ? recipe.getSourceLink() : "");
+        cv.put(COLUMN_SCRAPED_TEXT, recipe.getScrapedText() != null ? recipe.getScrapedText() : "");
+    }
+
+    static Recipe cursorToRecipe(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID));
         String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
         String category = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY));

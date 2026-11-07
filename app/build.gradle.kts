@@ -22,7 +22,6 @@ android {
         release {
             optimization {
                 enable = true
-                packageScope = setOf("androidx.**", "kotlin.**", "kotlinx.**")
             }
         }
     }
@@ -32,6 +31,12 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = false
+        }
     }
 }
 
@@ -43,6 +48,8 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.json)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
 }
