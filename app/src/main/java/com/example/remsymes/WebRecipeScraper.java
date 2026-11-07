@@ -30,7 +30,7 @@ public class WebRecipeScraper {
             try {
                 String html = fetchHtml(urlString);
                 if (html != null && !html.trim().isEmpty()) {
-                    parsedDraft = RecipeScrapersJava.scrape(urlString, html);
+                    parsedDraft = RecipeScraperRegistry.forUrl(urlString).scrape(urlString, html);
                     if (parsedDraft != null) {
                         fullPageText = parsedDraft.getScrapedText();
                     } else {
