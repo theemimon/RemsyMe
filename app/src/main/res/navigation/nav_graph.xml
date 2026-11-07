@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.example.remsymes.FirstFragment"
+        android:name="me.remsy.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/CookbookFragment"
-        android:name="com.example.remsymes.CookbookFragment"
+        android:name="me.remsy.CookbookFragment"
         android:label="@string/cookbook_title"
         tools:layout="@layout/fragment_cookbook">
 
@@ -32,7 +32,7 @@
 
     <fragment
         android:id="@+id/CategoryRecipesFragment"
-        android:name="com.example.remsymes.CategoryRecipesFragment"
+        android:name="me.remsy.CategoryRecipesFragment"
         android:label="@string/category_recipes_label"
         tools:layout="@layout/fragment_category_recipes">
 
@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/AddRecipeFragment"
-        android:name="com.example.remsymes.AddRecipeFragment"
+        android:name="me.remsy.AddRecipeFragment"
         android:label="@string/add_recipe_title"
         tools:layout="@layout/fragment_add_recipe">
 
@@ -56,7 +56,7 @@
 
     <fragment
         android:id="@+id/RecipeDetailFragment"
-        android:name="com.example.remsymes.RecipeDetailFragment"
+        android:name="me.remsy.RecipeDetailFragment"
         android:label="@string/recipe_detail_label"
         tools:layout="@layout/fragment_recipe_detail">
 
@@ -67,7 +67,7 @@
 
     <fragment
         android:id="@+id/EditRecipeFragment"
-        android:name="com.example.remsymes.EditRecipeFragment"
+        android:name="me.remsy.EditRecipeFragment"
         android:label="@string/edit_recipe_title"
         tools:layout="@layout/fragment_edit_recipe" />
 </navigation>

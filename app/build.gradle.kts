@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.remsymes"
+    namespace = "me.remsy"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.remsymes"
+        applicationId = "me.remsy"
         minSdk = 24
         targetSdk = 37
         versionCode = (project.findProperty("releaseVersionCode") as String?)?.toInt() ?: 1
