@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -15,8 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 import me.remsy.databinding.FragmentEditRecipeBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EditRecipeFragment extends Fragment {
@@ -60,6 +65,9 @@ public class EditRecipeFragment extends Fragment {
 
         setupCategoryDropdown();
 
+        binding.btnAddIngredientField.setOnClickListener(v -> addIngredientRow("", ""));
+        binding.btnAddStepField.setOnClickListener(v -> addInstructionStepRow(""));
+
         long recipeId = 1;
         if (getArguments() != null) {
             recipeId = getArguments().getLong("recipeId", 1);
@@ -99,8 +107,8 @@ public class EditRecipeFragment extends Fragment {
 
             String time = binding.etPrepTime.getText() != null ? binding.etPrepTime.getText().toString().trim() : "";
             String portions = binding.etPortions.getText() != null ? binding.etPortions.getText().toString().trim() : "";
-            String ingredients = binding.etIngredients.getText() != null ? binding.etIngredients.getText().toString().trim() : "";
-            String instructions = binding.etInstructions.getText() != null ? binding.etInstructions.getText().toString().trim() : "";
+            String ingredients = getIngredientsFromFields();
+            String instructions = getInstructionsFromFields();
             String sourceLink = binding.etSourceLink.getText() != null ? binding.etSourceLink.getText().toString().trim() : "";
             String scrapedText = binding.etScrapedText.getText() != null ? binding.etScrapedText.getText().toString().trim() : "";
 
@@ -122,6 +130,111 @@ public class EditRecipeFragment extends Fragment {
             Toast.makeText(requireContext(), R.string.msg_recipe_updated, Toast.LENGTH_SHORT).show();
             NavHostFragment.findNavController(EditRecipeFragment.this).popBackStack();
         });
+    }
+
+    private void addIngredientRow(String quantity, String name) {
+        if (getContext() == null) return;
+        View rowView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.item_ingredient_input_field, binding.layoutIngredientsContainer, false);
+
+        TextInputEditText etQuantity = rowView.findViewById(R.id.et_ingredient_quantity);
+        TextInputEditText etName = rowView.findViewById(R.id.et_ingredient_name);
+        ImageButton btnRemove = rowView.findViewById(R.id.btn_remove_ingredient);
+
+        etQuantity.setText(quantity != null ? quantity : "");
+        etName.setText(name != null ? name : "");
+
+        btnRemove.setOnClickListener(v -> binding.layoutIngredientsContainer.removeView(rowView));
+
+        binding.layoutIngredientsContainer.addView(rowView);
+    }
+
+    private void populateIngredientFields(String rawIngredients) {
+        binding.layoutIngredientsContainer.removeAllViews();
+        List<Ingredient> list = Ingredient.parseList(rawIngredients);
+        if (!list.isEmpty()) {
+            for (Ingredient ing : list) {
+                addIngredientRow(ing.getQuantity(), ing.getName());
+            }
+        } else {
+            addIngredientRow("", "");
+        }
+    }
+
+    private String getIngredientsFromFields() {
+        List<Ingredient> list = new ArrayList<>();
+        int childCount = binding.layoutIngredientsContainer.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View rowView = binding.layoutIngredientsContainer.getChildAt(i);
+            TextInputEditText etQuantity = rowView.findViewById(R.id.et_ingredient_quantity);
+            TextInputEditText etName = rowView.findViewById(R.id.et_ingredient_name);
+
+            String q = etQuantity.getText() != null ? etQuantity.getText().toString().trim() : "";
+            String n = etName.getText() != null ? etName.getText().toString().trim() : "";
+
+            if (!q.isEmpty() || !n.isEmpty()) {
+                list.add(new Ingredient(q, n));
+            }
+        }
+        return Ingredient.toStorageString(list);
+    }
+
+    private void addInstructionStepRow(String stepText) {
+        if (getContext() == null) return;
+        View rowView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.item_instruction_input_field, binding.layoutInstructionsContainer, false);
+
+        TextInputEditText etStepInstruction = rowView.findViewById(R.id.et_step_instruction);
+        ImageButton btnRemove = rowView.findViewById(R.id.btn_remove_step);
+
+        etStepInstruction.setText(stepText != null ? stepText : "");
+
+        btnRemove.setOnClickListener(v -> {
+            binding.layoutInstructionsContainer.removeView(rowView);
+            updateStepLabels();
+        });
+
+        binding.layoutInstructionsContainer.addView(rowView);
+        updateStepLabels();
+    }
+
+    private void updateStepLabels() {
+        int count = binding.layoutInstructionsContainer.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View rowView = binding.layoutInstructionsContainer.getChildAt(i);
+            TextView tvStepLabel = rowView.findViewById(R.id.tv_step_label);
+            if (tvStepLabel != null) {
+                tvStepLabel.setText(getString(R.string.step_label_fmt, i + 1));
+            }
+        }
+    }
+
+    private void populateInstructionFields(String rawInstructions) {
+        binding.layoutInstructionsContainer.removeAllViews();
+        List<InstructionStep> list = InstructionStep.parseList(rawInstructions);
+        if (!list.isEmpty()) {
+            for (InstructionStep step : list) {
+                addInstructionStepRow(step.getInstructionText());
+            }
+        } else {
+            addInstructionStepRow("");
+        }
+    }
+
+    private String getInstructionsFromFields() {
+        List<InstructionStep> list = new ArrayList<>();
+        int childCount = binding.layoutInstructionsContainer.getChildCount();
+        int stepNum = 1;
+        for (int i = 0; i < childCount; i++) {
+            View rowView = binding.layoutInstructionsContainer.getChildAt(i);
+            TextInputEditText etStepInstruction = rowView.findViewById(R.id.et_step_instruction);
+            String text = etStepInstruction.getText() != null ? etStepInstruction.getText().toString().trim() : "";
+            if (!text.isEmpty()) {
+                list.add(new InstructionStep(stepNum, text));
+                stepNum++;
+            }
+        }
+        return InstructionStep.toStorageString(list);
     }
 
     private void setupCategoryDropdown() {
@@ -154,8 +267,8 @@ public class EditRecipeFragment extends Fragment {
         }
         binding.etPrepTime.setText(recipe.getPrepTime());
         binding.etPortions.setText(recipe.getPortions());
-        binding.etIngredients.setText(recipe.getIngredients());
-        binding.etInstructions.setText(recipe.getInstructions());
+        populateIngredientFields(recipe.getIngredients());
+        populateInstructionFields(recipe.getInstructions());
         if (recipe.getSourceLink() != null) binding.etSourceLink.setText(recipe.getSourceLink());
         if (recipe.getScrapedText() != null) binding.etScrapedText.setText(recipe.getScrapedText());
 

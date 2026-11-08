@@ -126,6 +126,11 @@ public class RecipeParser {
 
     private static final Pattern WEIGHT_UNIT_PATTERN = Pattern.compile("\\d\\s*(g|oz)\\b", Pattern.CASE_INSENSITIVE);
 
+    private static final Pattern ACTION_VERB_PATTERN = Pattern.compile(
+            "^(?:step\\s*\\d+[.:)]?|\\d+[.:)]|mix|combine|cook|bake|stir|add|whisk|fry|heat|boil|toss|pour|garnish|serve|blend|chop|preheat|place|simmer|season|spread|roll|fold|beat|cover|remove|slice|cut|drain)\\b",
+            Pattern.CASE_INSENSITIVE
+    );
+
     private static boolean isIngredientLine(String line) {
         String lower = line.toLowerCase();
         return line.matches("^[0-9½⅓¼¾•\\-*].*") || lower.contains("cup") || lower.contains("tbsp")
@@ -134,7 +139,10 @@ public class RecipeParser {
     }
 
     private static boolean isInstructionLine(String line) {
-        return line.matches("^(Step|step)?\\s*\\d+[.:)].*") || line.length() > 40;
+        if (line == null || line.trim().isEmpty()) return false;
+        String trimmed = line.trim();
+        if (isIngredientLine(trimmed)) return false;
+        return ACTION_VERB_PATTERN.matcher(trimmed).find() || trimmed.length() > 25 || trimmed.endsWith(".") || trimmed.endsWith("!");
     }
 
     private static String extractTitleFromUrl(String url) {
@@ -164,7 +172,7 @@ public class RecipeParser {
     }
 
     private static String cleanBullet(String line) {
-        return line.replaceAll("^[0-9•\\-*\\s]+", "").trim();
+        return line.replaceAll("^[•\\-*\\s]+", "").trim();
     }
 
     private static String extractPattern(String text, String regex) {

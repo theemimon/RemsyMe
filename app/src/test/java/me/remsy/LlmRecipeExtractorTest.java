@@ -30,7 +30,7 @@ public class LlmRecipeExtractorTest {
         assertEquals("Amazing Pasta Recipe", recipe.getName());
         assertEquals("Uncategorized", recipe.getCategory());
         assertEquals("", recipe.getPrepTime());
-        assertEquals("• cups flour\n• egg", recipe.getIngredients());
+        assertEquals("• 2 cups flour\n• 1 egg", recipe.getIngredients());
         assertEquals("1. Combine everything well\n2. Cook for 10 minutes until done", recipe.getInstructions());
     }
 

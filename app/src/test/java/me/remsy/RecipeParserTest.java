@@ -36,7 +36,7 @@ public class RecipeParserTest {
         assertEquals("Amazing Pasta Recipe", recipe.getName());
         assertEquals("Uncategorized", recipe.getCategory());
         assertEquals("10 minutes", recipe.getPrepTime());
-        assertEquals("• cups flour\n• egg", recipe.getIngredients());
+        assertEquals("• 2 cups flour\n• 1 egg", recipe.getIngredients());
         assertEquals("Mix everything together\nCook for 10 minutes", recipe.getInstructions());
     }
 

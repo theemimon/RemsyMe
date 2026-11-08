@@ -75,8 +75,17 @@
     <string name="hint_scraped_text">Full raw scraped text from web page...</string>
     <string name="label_ingredients">Ingredients</string>
     <string name="hint_ingredients">Enter each ingredient on a new line...</string>
+    <string name="btn_add_ingredient">+ Add Ingredient</string>
+    <string name="hint_quantity">Quantity (e.g. 200g)</string>
+    <string name="hint_ingredient_name">Ingredient Name (e.g. Flour)</string>
+    <string name="cd_remove_ingredient">Remove ingredient</string>
     <string name="label_instructions">Instructions</string>
     <string name="hint_instructions">Enter step-by-step instructions...</string>
+    <string name="btn_add_step">+ Add Step</string>
+    <string name="hint_step_instruction">Enter step instruction...</string>
+    <string name="step_label_fmt">Step %1$d</string>
+    <string name="cd_remove_step">Remove step</string>
+    <string name="step_number_fmt">%1$d.</string>
     <string name="btn_save_recipe">Save Recipe</string>
     <string name="btn_update_recipe">Update Recipe</string>
     <string name="msg_recipe_saved">Recipe saved successfully!</string>

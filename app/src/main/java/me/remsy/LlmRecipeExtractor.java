@@ -116,8 +116,8 @@ public class LlmRecipeExtractor {
             }
         }
 
-        // Fallback: If no structured instructions, put full raw text in instructions
-        if (instructions.length() == 0) {
+        // Fallback: Only if BOTH ingredients AND instructions are completely empty, put raw text in instructions
+        if (instructions.length() == 0 && ingredients.length() == 0) {
             instructions.append(text);
         }
 
@@ -139,6 +139,11 @@ public class LlmRecipeExtractor {
 
     private static final Pattern WEIGHT_UNIT_PATTERN = Pattern.compile("\\d\\s*(g|oz)\\b", Pattern.CASE_INSENSITIVE);
 
+    private static final Pattern ACTION_VERB_PATTERN = Pattern.compile(
+            "^(?:step\\s*\\d+[.:)]?|\\d+[.:)]|mix|combine|cook|bake|stir|add|whisk|fry|heat|boil|toss|pour|garnish|serve|blend|chop|preheat|place|simmer|season|spread|roll|fold|beat|cover|remove|slice|cut|drain)\\b",
+            Pattern.CASE_INSENSITIVE
+    );
+
     private static boolean isIngredientLine(String l) {
         String lower = l.toLowerCase();
         return l.matches("^[0-9½⅓¼¾•\\-*].*") || lower.contains("cup") || lower.contains("tbsp")
@@ -147,7 +152,10 @@ public class LlmRecipeExtractor {
     }
 
     private static boolean isInstructionLine(String l) {
-        return l.matches("^(Step|step)?\\s*\\d+[.:)].*") || (l.length() > 45 && (l.endsWith(".") || l.endsWith("!")));
+        if (l == null || l.trim().isEmpty()) return false;
+        String trimmed = l.trim();
+        if (isIngredientLine(trimmed)) return false;
+        return ACTION_VERB_PATTERN.matcher(trimmed).find() || trimmed.length() > 25 || trimmed.endsWith(".") || trimmed.endsWith("!");
     }
 
     private static boolean isCommonSiteBanner(String l) {
@@ -161,7 +169,7 @@ public class LlmRecipeExtractor {
     }
 
     private static String cleanIngredient(String l) {
-        return l.replaceAll("^[0-9•\\-*\\s]+", "").trim();
+        return l.replaceAll("^[•\\-*\\s]+", "").trim();
     }
 
     private static String extractTitleFromUrl(String url) {

@@ -5,7 +5,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -102,20 +105,49 @@ public class RecipeDetailFragment extends Fragment {
         }
 
         // Ingredients section
-        if (recipe.getIngredients() != null && !recipe.getIngredients().trim().isEmpty()) {
+        List<Ingredient> ingredientList = Ingredient.parseList(recipe.getIngredients());
+        if (!ingredientList.isEmpty()) {
             binding.tvIngredientsHeading.setVisibility(View.VISIBLE);
             binding.cardIngredients.setVisibility(View.VISIBLE);
-            binding.tvIngredientsContent.setText(recipe.getIngredients().trim());
+            binding.layoutIngredientsList.removeAllViews();
+
+            LayoutInflater inflater = LayoutInflater.from(requireContext());
+            for (Ingredient ing : ingredientList) {
+                View rowView = inflater.inflate(R.layout.item_ingredient_line, binding.layoutIngredientsList, false);
+                TextView tvQuantity = rowView.findViewById(R.id.tv_ingredient_quantity);
+                TextView tvName = rowView.findViewById(R.id.tv_ingredient_name);
+
+                if (!ing.getQuantity().isEmpty()) {
+                    tvQuantity.setVisibility(View.VISIBLE);
+                    tvQuantity.setText(ing.getQuantity());
+                } else {
+                    tvQuantity.setVisibility(View.GONE);
+                }
+                tvName.setText(ing.getName());
+                binding.layoutIngredientsList.addView(rowView);
+            }
         } else {
             binding.tvIngredientsHeading.setVisibility(View.GONE);
             binding.cardIngredients.setVisibility(View.GONE);
         }
 
         // Instructions section
-        if (recipe.getInstructions() != null && !recipe.getInstructions().trim().isEmpty()) {
+        List<InstructionStep> stepList = InstructionStep.parseList(recipe.getInstructions());
+        if (!stepList.isEmpty()) {
             binding.tvInstructionsHeading.setVisibility(View.VISIBLE);
             binding.cardInstructions.setVisibility(View.VISIBLE);
-            binding.tvInstructionsContent.setText(recipe.getInstructions().trim());
+            binding.layoutInstructionsList.removeAllViews();
+
+            LayoutInflater inflater = LayoutInflater.from(requireContext());
+            for (InstructionStep step : stepList) {
+                View rowView = inflater.inflate(R.layout.item_instruction_step_line, binding.layoutInstructionsList, false);
+                TextView tvStepNumber = rowView.findViewById(R.id.tv_step_number);
+                TextView tvStepText = rowView.findViewById(R.id.tv_step_text);
+
+                tvStepNumber.setText(getString(R.string.step_number_fmt, step.getStepNumber()));
+                tvStepText.setText(step.getInstructionText());
+                binding.layoutInstructionsList.addView(rowView);
+            }
         } else {
             binding.tvInstructionsHeading.setVisibility(View.GONE);
             binding.cardInstructions.setVisibility(View.GONE);

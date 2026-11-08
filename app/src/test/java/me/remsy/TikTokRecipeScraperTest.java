@@ -71,7 +71,7 @@ public class TikTokRecipeScraperTest {
         Recipe recipe = scraper.scrape("https://www.tiktok.com/@user/video/12345", html);
 
         assertEquals("Creamy Pasta Recipe", recipe.getName());
-        assertEquals("• cups flour\n• egg", recipe.getIngredients());
+        assertEquals("• 2 cups flour\n• 1 egg", recipe.getIngredients());
         assertEquals("1. Combine everything well\n2. Cook for 10 minutes", recipe.getInstructions());
     }
 }

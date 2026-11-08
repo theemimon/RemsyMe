@@ -348,6 +348,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_ingredients_heading">
 
                 <LinearLayout
+                    android:id="@+id/layout_ingredients_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -358,7 +359,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="?attr/textAppearanceBodyMedium"
-                        android:textColor="@color/text_dark" />
+                        android:textColor="@color/text_dark"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -391,6 +393,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_instructions_heading">
 
                 <LinearLayout
+                    android:id="@+id/layout_instructions_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -401,7 +404,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="?attr/textAppearanceBodyMedium"
-                        android:textColor="@color/text_dark" />
+                        android:textColor="@color/text_dark"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 

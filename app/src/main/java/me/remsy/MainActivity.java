@@ -74,9 +74,18 @@ public class MainActivity extends AppCompatActivity {
             String url = UrlExtractor.extractUrl(sharedText);
             if (url != null) {
                 Toast.makeText(this, "Scraping web page text...", Toast.LENGTH_SHORT).show();
-                WebRecipeScraper.scrapeUrl(getApplicationContext(), url, (scrapedText, draftRecipe) ->
-                        binding.getRoot().post(() -> navigateToAddRecipeDraft(draftRecipe))
-                );
+                WebRecipeScraper.scrapeUrl(getApplicationContext(), url, (scrapedText, draftRecipe) -> {
+                    if (draftRecipe != null
+                            && draftRecipe.getIngredients().isEmpty()
+                            && (draftRecipe.getInstructions().startsWith("Shared URL:") || draftRecipe.getInstructions().equals(url))) {
+                        Recipe fallbackDraft = RecipeParser.parseSharedText(sharedText);
+                        fallbackDraft.setSourceLink(url);
+                        fallbackDraft.setScrapedText(sharedText);
+                        binding.getRoot().post(() -> navigateToAddRecipeDraft(fallbackDraft));
+                    } else {
+                        binding.getRoot().post(() -> navigateToAddRecipeDraft(draftRecipe));
+                    }
+                });
             } else {
                 Recipe draft = RecipeParser.parseSharedText(sharedText);
                 draft.setScrapedText(sharedText);
