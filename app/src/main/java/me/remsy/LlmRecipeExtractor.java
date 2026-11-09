@@ -7,12 +7,35 @@ import java.util.regex.Pattern;
 
 public class LlmRecipeExtractor {
 
+    static String normalizeText(String rawText) {
+        if (rawText == null || rawText.trim().isEmpty()) return "";
+
+        String text = rawText.trim();
+
+        // 1. Insert newlines before "Recipe -" or "Recipe:" or "Title:" if inline
+        text = text.replaceAll("(?i)(?:^|\\s+)(Recipe|Title)\\s*[:\\-]\\s*", "\nRecipe: ");
+
+        // 2. Insert newlines before section headers if inline
+        text = text.replaceAll("(?i)\\s*(?:/\\s*)?(Ingredients:|Instructions:|Directions:|Method:|Preparation:)", "\n$1");
+
+        // 3. Insert newlines before "For [subcomponent]:" or "For:" if inline
+        text = text.replaceAll("(?i)\\s+(For(?:\\s+[^:]+)?\\s*:)", "\n$1");
+
+        // 4. Insert newlines before numbered steps (e.g. " 1. ", " 2. ", " 10. ") if inline
+        text = text.replaceAll("(?<=\\S)\\s+(\\d+[.:)]\\s+[A-Z])", "\n$1");
+
+        // 5. Insert newlines before bulleted items (e.g. " - 350g", " • 1 egg") if inline
+        text = text.replaceAll("(?<=\\S)\\s+([\\-•*]\\s+[0-9A-Za-z])", "\n$1");
+
+        return text;
+    }
+
     public static Recipe extractRecipeFromText(String rawText, String sourceUrl) {
         if (rawText == null || rawText.trim().isEmpty()) {
             return new Recipe(0, "Imported Recipe", "Uncategorized", "", "", 0.0, false, "recipe_sample_image", "", "", sourceUrl, "");
         }
 
-        String text = rawText.trim();
+        String text = normalizeText(rawText);
         String[] lines = text.split("\r?\n");
 
         String name = "";
@@ -24,10 +47,13 @@ public class LlmRecipeExtractor {
         // 1. Title Extraction: Search first 15 lines for the best candidate title
         for (int i = 0; i < Math.min(lines.length, 15); i++) {
             String l = lines[i].trim();
-            if (l.isEmpty() || l.toLowerCase().startsWith("http") || isCommonSiteBanner(l)) continue;
-            if (l.length() >= 3 && l.length() <= 70 && name.isEmpty()) {
+            if (l.isEmpty() || l.toLowerCase().startsWith("http") || isCommonSiteBanner(l) || isHeader(l.toLowerCase())) continue;
+            if (l.toLowerCase().contains("recipe -") || l.toLowerCase().contains("recipe:") || l.toLowerCase().contains("title:")) {
                 name = cleanTitle(l);
                 break;
+            }
+            if (l.length() >= 3 && l.length() <= 70 && name.isEmpty()) {
+                name = cleanTitle(l);
             }
         }
 
@@ -66,6 +92,10 @@ public class LlmRecipeExtractor {
             String l = line.trim();
             if (l.isEmpty()) continue;
             String lower = l.toLowerCase();
+
+            if (lower.contains("recipe -") || lower.contains("recipe:") || lower.contains("title:") || cleanTitle(l).equalsIgnoreCase(name)) {
+                continue;
+            }
 
             if (isIngredientHeader(lower)) {
                 insideIngredients = true;
@@ -179,7 +209,26 @@ public class LlmRecipeExtractor {
     }
 
     private static String cleanTitle(String l) {
-        return l.replaceAll("(?i)\\s*(\\||-|•).*$", "").trim();
+        if (l == null) return "";
+        String s = l.trim();
+        s = s.replaceAll("(?i)^(?:Recipe|Title)\\s*[:\\-]*\\s*", "");
+        s = s.replaceAll("^[•\\-*\\s/]+", "");
+        s = s.replaceAll("(?i)[|\\-•/\\s]+$", "");
+        return capitalizeWords(s.trim());
+    }
+
+    private static String capitalizeWords(String str) {
+        if (str == null || str.isEmpty()) return str;
+        String[] words = str.split("\\s+");
+        StringBuilder sb = new StringBuilder();
+        for (String w : words) {
+            if (!w.isEmpty()) {
+                sb.append(Character.toUpperCase(w.charAt(0)))
+                        .append(w.substring(1).toLowerCase())
+                        .append(" ");
+            }
+        }
+        return sb.toString().trim();
     }
 
     private static String cleanIngredient(String l) {

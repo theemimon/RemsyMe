@@ -12,7 +12,7 @@ public class RecipeParser {
             return new Recipe(0, "Imported Recipe", "Uncategorized", "", "", 0.0, false, "recipe_sample_image", "", "");
         }
 
-        String rawText = sharedText.trim();
+        String rawText = LlmRecipeExtractor.normalizeText(sharedText);
         String title = "";
         String time = "";
         String portions = "";
@@ -39,10 +39,15 @@ public class RecipeParser {
                 continue;
             }
 
-            // Extract title from first clean non-header line
-            if (title.isEmpty() && !isHeader(lower) && line.length() < 80) {
-                title = cleanTitle(line);
-                continue;
+            // Extract title from explicit "Recipe -" / "Recipe:" line or first clean non-header line
+            if (!isHeader(lower) && line.length() < 120) {
+                if (lower.contains("recipe -") || lower.contains("recipe:") || lower.contains("title:")) {
+                    title = cleanTitle(line);
+                    continue;
+                } else if (title.isEmpty()) {
+                    title = cleanTitle(line);
+                    continue;
+                }
             }
 
             // Detect headers
@@ -179,11 +184,16 @@ public class RecipeParser {
     }
 
     private static String cleanTitle(String line) {
-        String cleaned = line.replace("Check out this recipe:", "")
+        if (line == null) return "";
+        String s = line.trim();
+        s = s.replaceAll("(?i)^(?:Recipe|Title)\\s*[:\\-]*\\s*", "");
+        s = s.replaceAll("^[•\\-*\\s/]+", "");
+        s = s.replaceAll("(?i)[|\\-•/\\s]+$", "");
+        s = s.replace("Check out this recipe:", "")
                 .replace("Check out", "")
                 .replace("Sharing:", "")
                 .trim();
-        return capitalizeWords(cleaned);
+        return capitalizeWords(s.trim());
     }
 
     private static String cleanBullet(String line) {
