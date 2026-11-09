@@ -70,6 +70,9 @@ public class LlmRecipeExtractor {
             if (isIngredientHeader(lower)) {
                 insideIngredients = true;
                 insideInstructions = false;
+                if (isForIngredientHeader(lower)) {
+                    ingredientLines.add(cleanIngredient(l));
+                }
                 continue;
             } else if (isInstructionHeader(lower)) {
                 insideInstructions = true;
@@ -124,8 +127,19 @@ public class LlmRecipeExtractor {
         return new Recipe(0, name, "Uncategorized", prepTime, portions, 0.0, false, "recipe_sample_image", ingredients.toString(), instructions.toString(), sourceUrl, text);
     }
 
+    private static final Pattern FOR_HEADER_PATTERN = Pattern.compile("^for(?:\\s+[^:]+)?\\s*:?$", Pattern.CASE_INSENSITIVE);
+
+    private static boolean isForIngredientHeader(String lower) {
+        if (lower == null || lower.trim().isEmpty()) return false;
+        String trimmed = lower.trim();
+        if (trimmed.contains("serv") || trimmed.contains("min") || trimmed.contains("hour") || trimmed.contains("time") || trimmed.contains("people")) {
+            return false;
+        }
+        return FOR_HEADER_PATTERN.matcher(trimmed).matches();
+    }
+
     private static boolean isIngredientHeader(String lower) {
-        return lower.contains("ingredient") || lower.contains("what you'll need") || lower.contains("what you need");
+        return lower.contains("ingredient") || lower.contains("what you'll need") || lower.contains("what you need") || isForIngredientHeader(lower);
     }
 
     private static boolean isInstructionHeader(String lower) {

@@ -49,6 +49,10 @@ public class RecipeParser {
             if (isIngredientHeader(lower)) {
                 inIngredients = true;
                 inInstructions = false;
+                if (isForIngredientHeader(lower)) {
+                    if (ingredients.length() > 0) ingredients.append("\n");
+                    ingredients.append("• ").append(cleanBullet(line));
+                }
                 continue;
             } else if (isInstructionHeader(lower)) {
                 inInstructions = true;
@@ -115,8 +119,19 @@ public class RecipeParser {
         return isIngredientHeader(lower) || isInstructionHeader(lower);
     }
 
+    private static final Pattern FOR_HEADER_PATTERN = Pattern.compile("^for(?:\\s+[^:]+)?\\s*:?$", Pattern.CASE_INSENSITIVE);
+
+    private static boolean isForIngredientHeader(String lower) {
+        if (lower == null || lower.trim().isEmpty()) return false;
+        String trimmed = lower.trim();
+        if (trimmed.contains("serv") || trimmed.contains("min") || trimmed.contains("hour") || trimmed.contains("time") || trimmed.contains("people")) {
+            return false;
+        }
+        return FOR_HEADER_PATTERN.matcher(trimmed).matches();
+    }
+
     private static boolean isIngredientHeader(String lower) {
-        return lower.contains("ingredient") || lower.contains("what you need") || lower.contains("shopping list");
+        return lower.contains("ingredient") || lower.contains("what you need") || lower.contains("shopping list") || isForIngredientHeader(lower);
     }
 
     private static boolean isInstructionHeader(String lower) {

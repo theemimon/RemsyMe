@@ -83,4 +83,24 @@ public class LlmRecipeExtractorTest {
 
         assertEquals("Just A Title", recipe.getInstructions());
     }
+
+    @Test
+    public void parsesForSubHeadersAsIngredients() {
+        String text = "Tuscan Chicken Pasta\n"
+                + "For the chicken:\n"
+                + "2 chicken breasts\n"
+                + "1 tbsp olive oil\n"
+                + "For the sauce:\n"
+                + "1 cup heavy cream\n"
+                + "½ cup parmesan\n"
+                + "Instructions:\n"
+                + "Sear the chicken in olive oil\n"
+                + "Pour heavy cream and parmesan";
+
+        Recipe recipe = LlmRecipeExtractor.extractRecipeFromText(text, "https://example.com/tuscan");
+
+        assertEquals("Tuscan Chicken Pasta", recipe.getName());
+        assertEquals("• For the chicken:\n• 2 chicken breasts\n• 1 tbsp olive oil\n• For the sauce:\n• 1 cup heavy cream\n• ½ cup parmesan", recipe.getIngredients());
+        assertEquals("1. Sear the chicken in olive oil\n2. Pour heavy cream and parmesan", recipe.getInstructions());
+    }
 }
