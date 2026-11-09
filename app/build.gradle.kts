@@ -10,7 +10,8 @@ android {
 
     defaultConfig {
         applicationId = "me.remsy"
-        minSdk = 24
+        // 26+ required by the mlkit-genai-prompt on-device LLM dependency.
+        minSdk = 26
         targetSdk = 37
         versionCode = (project.findProperty("releaseVersionCode") as String?)?.toInt() ?: 1
         versionName = project.findProperty("releaseVersionName") as String? ?: "1.0"
@@ -65,6 +66,7 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.mlkit.text.recognition)
+    implementation(libs.mlkit.genai.prompt)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
     testImplementation(libs.json)

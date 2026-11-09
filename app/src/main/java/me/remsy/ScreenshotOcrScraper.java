@@ -38,7 +38,7 @@ public final class ScreenshotOcrScraper {
                         String rawText = visionText.getText();
                         Recipe draft = LlmRecipeExtractor.extractRecipeFromText(rawText, null);
                         draft.setImageUri(imageUri.toString());
-                        callback.onSuccess(draft);
+                        RecipeLlmEnhancer.enhance(rawText, draft, callback::onSuccess);
                     })
                     .addOnFailureListener(e -> callback.onError(e.getMessage()));
         } catch (IOException e) {

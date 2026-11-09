@@ -12,6 +12,7 @@ navigationUi = "2.6.0"
 mockitoCore = "5.24.0"
 json = "20231013"
 mlkitTextRecognition = "16.0.1"
+mlkitGenaiPrompt = "1.0.0-beta4"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -20,6 +21,7 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoCore" }
 json = { group = "org.json", name = "json", version.ref = "json" }
 mlkit-text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkitTextRecognition" }
+mlkit-genai-prompt = { group = "com.google.mlkit", name = "genai-prompt", version.ref = "mlkitGenaiPrompt" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }

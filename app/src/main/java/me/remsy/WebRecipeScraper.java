@@ -1,8 +1,6 @@
 package me.remsy;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,7 +19,6 @@ public class WebRecipeScraper {
     }
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public static void scrapeUrl(Context context, String urlString, ScrapeCallback callback) {
         Context appContext = context != null ? context.getApplicationContext() : null;
@@ -64,9 +61,9 @@ public class WebRecipeScraper {
             }
 
             final String finalText = fullPageText;
-            final Recipe finalDraft = parsedDraft;
 
-            mainHandler.post(() -> callback.onSuccess(finalText, finalDraft));
+            RecipeLlmEnhancer.enhance(finalText, parsedDraft, enhancedDraft ->
+                    callback.onSuccess(finalText, enhancedDraft));
         });
     }
 
